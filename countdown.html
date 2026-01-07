@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Alert</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: black;
+    color: red;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Vignette */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    box-shadow: inset 0 0 120px rgba(255,0,0,0.45);
+    pointer-events: none;
+}
+
+/* Scanning lines */
+.scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,0,0,0.05),
+        rgba(255,0,0,0.05) 1px,
+        transparent 2px,
+        transparent 6px
+    );
+    animation: scan 6s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scan {
+    from { background-position: 0 0; }
+    to { background-position: 0 100px; }
+}
+
+.container {
+    border: 3px solid red;
+    padding: 25px;
+    width: 90%;
+    max-width: 420px;
+    animation: pulse 1.2s infinite;
+}
+
+h1 {
+    font-size: 1.6rem;
+    margin-bottom: 18px;
+    animation: flicker 1.6s infinite;
+}
+
+#warning {
+    font-size: 1.1rem;
+    min-height: 70px;
+    margin-bottom: 20px;
+}
+
+#timer {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { box-shadow: 0 0 6px red; }
+    50% { box-shadow: 0 0 22px red; }
+    100% { box-shadow: 0 0 6px red; }
+}
+
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+
+/* Screen shake */
+.shake {
+    animation: shake 0.15s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(0); }
+    25% { transform: translate(-2px, 1px); }
+    50% { transform: translate(2px, -1px); }
+    75% { transform: translate(-1px, 2px); }
+    100% { transform: translate(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="scanlines"></div>
+
+<div class="container" id="box">
+    <h1>⚠️ SECURITY BREACH DETECTED ⚠️</h1>
+    <div id="warning"></div>
+    <div id="timer">60</div>
+</div>
+
+<script>
+let timeLeft = 60;
+
+const warnings = [
+    "Unauthorized access detected on this device.<br>Please <b>DO NOT</b> close this page.",
+
+    "Device fingerprint identified.<br>Session has been locked.",
+
+    "Camera and microphone handshake initiated…<br>Awaiting device response…",
+
+    "Private data access request approved.<br>System integrity compromised.",
+
+    "Location trace confirmed.<br>Network identity bound — <b>IRREVERSIBLE</b>.",
+
+    "<span style='color:#ff0000;'>DATA TRANSFER IN PROGRESS…<br>DO NOT POWER OFF DEVICE.</span>"
+];
+
+const warningBox = document.getElementById("warning");
+const timerBox = document.getElementById("timer");
+const box = document.getElementById("box");
+
+warningBox.innerHTML = warnings[0];
+
+const interval = setInterval(() => {
+    timeLeft--;
+    timerBox.textContent = timeLeft;
+
+    if (timeLeft === 50) warningBox.innerHTML = warnings[1];
+    if (timeLeft === 40) warningBox.innerHTML = warnings[2];
+    if (timeLeft === 30) warningBox.innerHTML = warnings[3];
+    if (timeLeft === 20) warningBox.innerHTML = warnings[4];
+    if (timeLeft === 10) {
+        warningBox.innerHTML = warnings[5];
+        box.classList.add("shake");
+    }
+
+    if (timeLeft <= 0) {
+        clearInterval(interval);
+        document.body.innerHTML = "";
+        setTimeout(() => {
+            window.location.href = "final.html";
+        }, 800);
+    }
+}, 1000);
+</script>
+
+</body>
+</html>
